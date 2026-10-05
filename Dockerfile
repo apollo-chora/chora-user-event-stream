@@ -31,6 +31,7 @@ ARG BUILD_TIME=unknown
 # Stage 1 — build
 ############################
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+ARG TARGETARCH
 
 ARG SERVICE_NAME
 ARG GIT_SHA
@@ -46,7 +47,7 @@ RUN go mod download
 
 ENV CGO_ENABLED=0 \
     GOOS=linux \
-    GOARCH=amd64
+    GOARCH=${TARGETARCH}
 RUN go build -trimpath -ldflags "-s -w" -o /out/service ./cmd/server \
  && go build -trimpath -ldflags "-s -w" -o /out/fanin ./cmd/fanin
 
